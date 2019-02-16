@@ -19,6 +19,7 @@ from .lbfgs import LBFGS
 from .argd1 import ARGD1
 from .argd2 import ARGD2
 from .argd1b import ARGD1B
+from .argd2b import ARGD2B
 from . import lr_scheduler
 
 
@@ -36,4 +37,4 @@ del lbfgs
 del argd1
 del argd2
 del argd1b
-
+del argd2b

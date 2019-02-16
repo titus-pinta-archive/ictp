@@ -78,7 +78,7 @@ def main():
     parser.add_argument('--test-batch-size', type=int, default=1000, metavar='N',
                         help='input batch size for testing (default: 1000)')
     parser.add_argument('--epochs', type=int, default=30, metavar='N',
-                        help='number of epochs to train (default: 10)')
+                        help='number of epochs to train (default: 30)')
     parser.add_argument('--lr', type=float, default=0.00001, metavar='LR',
                         help='learning rate (default: 0.00001)')
     parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
@@ -132,7 +132,6 @@ def main():
 
     result = []
 
-    print('Learning rate was set for {}'.format(args.lr))
 
     for epoch in range(1, args.epochs + 1):
         train(args, model, device, train_loader, optimizer, epoch)
