@@ -119,13 +119,20 @@ def main():
     model.load_state_dict(torch.load('init.model'))
     model.to(device)
     try:
+        extra_params = {}
+
+        if args.optim == 'SGD':
+            extra_params = {'momentum': args.momentum}
+
         optim_class = getattr(optim, args.optim)
-        optimizer = optim_class(model.parameters(), lr=args.lr)
+        optimizer = optim_class(model.parameters(), lr=args.lr, **extra_params)
     except Exception as e:
         print(e)
         raise ValueError('Undefined Optimiser: {}'.format(args.optim))
 
     result = []
+
+    print('Learning rate was set for {}'.format(args.lr))
 
     for epoch in range(1, args.epochs + 1):
         train(args, model, device, train_loader, optimizer, epoch)
