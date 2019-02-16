@@ -8,6 +8,7 @@ import torch.nn.functional as F
 import optim
 from torchvision import datasets, transforms
 
+import dill
 
 class Net(nn.Module):
     def __init__(self):
@@ -65,7 +66,7 @@ def test(args, model, device, test_loader, result):
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
 
-    result.append(1 - (correct / len(test_loader.dataset)))
+    result.append(correct)
 
 def main():
     # Training settings
@@ -130,6 +131,9 @@ def main():
     for epoch in range(1, args.epochs + 1):
         train(args, model, device, train_loader, optimizer, epoch)
         test(args, model, device, test_loader, result)
+
+    with open('{}.result'.format(args.optim), 'wb') as f:
+        dill.dump((len(test_loader.dataset), result), f)
 
     torch.save(model.state_dict(), '{}.model'.format(args.optim))
 
