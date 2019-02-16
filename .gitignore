@@ -1,1 +1,2 @@
-*.model\n*.result
+*.model
+.result
