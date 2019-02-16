@@ -30,20 +30,22 @@ Please refer to the help option for a more detailed look at the different parame
 
 ## Current optimisers
 
+*Working optimisers marked as tested*
+
 1. ADADELTA
 2. ADAGRAD
 3. ADAMAX
 4. ADAM
-5. ARGD1
-6. ARGD1B
-7. ARGD2
-8. ARGD2B
+5. ARGD1 **tested**
+6. ARGD1B **tested**
+7. ARGD2 **tested**
+8. ARGD2B **tested**
 9. ASGD
 10. LBFGS
 11. LR_SCHEDULER
 12. RMSPROP
 13. RPROP
-14. SGD
+14. SGD **tested**
 15. SPARSE_ADAM
 
 ## Man Page
