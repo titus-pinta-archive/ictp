@@ -28,7 +28,34 @@ class Net(nn.Module):
         x = self.fc2(x)
         return F.log_softmax(x, dim=1)
 
-def train(args, model, device, train_loader, optimizer, epoch):
+def train_stoch(args, model, device, train_loader, optimizer, epoch):
+
+
+    model.train()
+
+
+    for batch_idx, (data, target) in enumerate(train_loader):
+        def closure():
+            optimizer.zero_grad()
+
+
+            data, target = data.to(device), target.to(device)
+            optimizer.zero_grad()
+            output = model(data)
+            loss = F.nll_loss(output, target)
+            loss.backward()
+
+        closure()
+        optimizer.step(closure)
+
+        if batch_idx % args.log_interval == 0:
+            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                epoch, batch_idx * len(data), len(train_loader.dataset),
+                100. * batch_idx / len(train_loader), loss.item()))
+
+
+
+def train_non_stoch(args, model, device, train_loader, optimizer, epoch):
     def closure():
         optimizer.zero_grad()
 
@@ -90,9 +117,17 @@ def main():
                         help='random seed (default: 1)')
     parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                         help='how many batches to wait before logging training status')
+    parser.add_argument('--stoch', action='store_true', default=False,
+                        help='use stochastic gradient computation')
     parser.add_argument('--save-name', default=None,help='File name to save current resault.' +
-                        'If None it will use the name of the optimise. (default: None)r')
+                        'If None it will use the name of the optimiser. (default: None)')
     args = parser.parse_args()
+
+    if(args.stoch):
+        train = train_stoch
+    else:
+        train = train_non_stoch
+
     use_cuda = False #not args.no_cuda and torch.cuda.is_available()
 
     torch.manual_seed(args.seed)
@@ -137,10 +172,10 @@ def main():
         train(args, model, device, train_loader, optimizer, epoch)
         test(args, model, device, test_loader, result)
 
-    with open('{}.result'.format(args.optim), 'wb') as f:
+    with open('{}{}.result'.format(args.optim, '.stoch' if args.stoch else ''), 'wb') as f:
         dill.dump((len(test_loader.dataset), result), f)
 
-    torch.save(model.state_dict(), '{}.model'.format(args.optim))
+    torch.save(model.state_dict(), '{}{}.model'.format(args.optim, '.stoch' if args.stoch else ''))
 
 if __name__ == '__main__':
     main()

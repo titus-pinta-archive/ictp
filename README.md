@@ -78,7 +78,9 @@ optional arguments:
   --log-interval N      how many batches to wait before logging training
 status
 
+  --stoch               use stochastic gradient computation
+
   --save-name SAVE_NAME
 File name to save current resault.If None it will use
-the name of the optimise. (default: None)r
+the name of the optimiser. (default: None)
 
