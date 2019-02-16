@@ -1,2 +1,4 @@
 *.model
 .result
+__pychache__
+*.pyc
