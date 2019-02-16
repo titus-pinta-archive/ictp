@@ -2,14 +2,14 @@ import torch
 from .optimizer import Optimizer, required
 
 
-class ARGD2(Optimizer):
+class ARGD1B(Optimizer):
 
     def __init__(self, params, lr=required):
         if lr is not required and lr < 0.0:
             raise ValueError("Invalid learning rate: {}".format(lr))
 
         defaults = dict(lr=lr)
-        super(ARGD2, self).__init__(params, defaults)
+        super(ARGD1B, self).__init__(params, defaults)
 
         self.state['n_iter'] = 0
 
@@ -17,7 +17,8 @@ class ARGD2(Optimizer):
             for p in group['params']:
                 self.state[p]['x_{n-1}'] = p.data
                 self.state[p]['nabla(z_{n})'] = None
-
+                self.state[p]['nable(x_{n})'] = None
+                self.state[p]['nable(x_{n-1})'] = torch.ones_like(p.data).mul_(float('inf'))
 
     def __setstate__(self, state):
         super(SGD, self).__setstate__(state)
@@ -46,8 +47,8 @@ class ARGD2(Optimizer):
 
                 d_p = p.grad.data
                 state['nabla(z_{n})'] = d_p
-                p.data.add_(p.data.sub(state['x_{n-1}']).mul(self.state['n_iter'] /
-                                                             (self.state['n_iter'] + 3)))
+                p.data.add_(p.data.sub(state['x_{n-1}']).mul(self.state['nabla(x_{n})'] /
+                                                             (self.state['nabla(x_{n-1})'])))
 
         closure()
 
@@ -60,15 +61,4 @@ class ARGD2(Optimizer):
 
                 d_p = p.grad.data
                 p.data.add_(d_p.mul(-group['lr']).add(state['nabla(z_{n})'].mul(-group['lr'] ** 2)))
-
-
-        for group in self.param_groups:
-
-            for p in group['params']:
-                if p.grad is None:
-                    continue
-
-            p.data.add_(p.grad.muli-(group['lr']))
-
         return closure
-
