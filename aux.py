@@ -115,8 +115,9 @@ def main():
         batch_size=args.test_batch_size, shuffle=True, **kwargs)
 
 
-    model = Net().to(device)
-    torch.save(model.state_dict, 'init.model')
+    model = Net()
+    model.load_state_dict(torch.load('init.model'))
+    model.to(device)
     try:
         optim_class = getattr(optim, args.optim)
         optimizer = optim_class(model.parameters(), lr=args.lr)
