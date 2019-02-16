@@ -5,11 +5,14 @@ How to run
 
 * with pip
 
-pip3 install torch torchvision
+_pip3 install torch torchvision_
 
 * with Anaconda
 
-conda install torch torchvision
+_conda install torch torchvision_
+
+
+## To run
 
 **If this instructions don't work for you please refer back to pytorch's webpage**
 
