@@ -35,10 +35,14 @@ def train_stoch(args, model, device, train_loader, optimizer, epoch):
 
 
     for batch_idx, (data, target) in enumerate(train_loader):
+        loss = None
+
         def closure():
+            nonlocal data
+            nonlocal target
+            nonlocal loss
+
             optimizer.zero_grad()
-
-
             data, target = data.to(device), target.to(device)
             optimizer.zero_grad()
             output = model(data)
@@ -122,6 +126,8 @@ def main():
     parser.add_argument('--save-name', default=None,help='File name to save current resault.' +
                         'If None it will use the name of the optimiser. (default: None)')
     args = parser.parse_args()
+
+    print('Gradient is computed {}'.format('stochastically' if args.stoch else 'non stochastically'))
 
     if(args.stoch):
         train = train_stoch
