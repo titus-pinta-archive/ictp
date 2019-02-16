@@ -2,7 +2,7 @@ import torch
 from .optimizer import Optimizer, required
 
 
-class ARGD1(Optimizer):
+class ARGD2(Optimizer):
 
     def __init__(self, params, lr=required):
         if lr is not required and lr < 0.0:
