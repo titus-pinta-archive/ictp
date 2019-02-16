@@ -129,6 +129,8 @@ def main():
 
     print('Gradient is computed {}'.format('stochastically' if args.stoch else 'non stochastically'))
 
+    print('Will train for {} epochs with a batch size of {}'.format(args.epochs, args.batch_size))
+
     if(args.stoch):
         train = train_stoch
     else:
