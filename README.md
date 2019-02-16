@@ -74,12 +74,9 @@ optional arguments:
   --seed S              random seed (default: 1)
 
   --log-interval N      how many batches to wait before logging training
-
-                        status
+status
 
   --save-name SAVE_NAME
-
-                        File name to save current resault.If None it will use
-
-                        the name of the optimise. (default: None)r
+File name to save current resault.If None it will use
+the name of the optimise. (default: None)r
 
