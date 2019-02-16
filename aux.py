@@ -1,3 +1,5 @@
+#! /bin/python
+
 from __future__ import print_function
 import argparse
 import torch
@@ -25,22 +27,25 @@ class Net(nn.Module):
         x = self.fc2(x)
         return F.log_softmax(x, dim=1)
 
-def closure():
-    pass
-
 def train(args, model, device, train_loader, optimizer, epoch):
+    def closure():
+        optimizer.zero_grad()
+
+
+        for batch_idx, (data, target) in enumerate(train_loader):
+            data, target = data.to(device), target.to(device)
+            output = model(data)
+            loss = F.nll_loss(output, target)
+            loss.backward()
+            if batch_idx % args.log_interval == 0:
+                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                    epoch, batch_idx * len(data), len(train_loader.dataset),
+                    100. * batch_idx / len(train_loader), loss.item()))
     model.train()
-    optimizer.zero_grad()
-    for batch_idx, (data, target) in enumerate(train_loader):
-        data, target = data.to(device), target.to(device)
-        output = model(data)
-        loss = F.nll_loss(output, target)
-        loss.backward()
-        if batch_idx % args.log_interval == 0:
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                epoch, batch_idx * len(data), len(train_loader.dataset),
-                100. * batch_idx / len(train_loader), loss.item()))
-        optimizer.step()
+
+    closure()
+
+    optimizer.step(closure)
 
 def test(args, model, device, test_loader, result):
     model.eval()
@@ -64,6 +69,8 @@ def test(args, model, device, test_loader, result):
 
 def main():
     # Training settings
+
+
     parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
     parser.add_argument('--batch-size', type=int, default=64, metavar='N',
                         help='input batch size for training (default: 64)')
@@ -75,6 +82,7 @@ def main():
                         help='learning rate (default: 0.01)')
     parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
                         help='SGD momentum (default: 0.5)')
+    parser.add_argument('--optim', default='SGD', help='Optimiser to use (default: SGD)')
     parser.add_argument('--no-cuda', action='store_true', default=False,
                         help='disables CUDA training')
     parser.add_argument('--seed', type=int, default=1, metavar='S',
@@ -108,15 +116,21 @@ def main():
 
 
     model = Net().to(device)
-    optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
+    torch.save(model.state_dict, 'init.model')
+    try:
+        optim_class = getattr(optim, args.optim)
+        optimizer = optim_class(model.parameters(), lr=args.lr)
+    except Exception as e:
+        print(e)
+        raise ValueError('Undefined Optimiser: {}'.format(args.optim))
+
     result = []
 
     for epoch in range(1, args.epochs + 1):
         train(args, model, device, train_loader, optimizer, epoch)
         test(args, model, device, test_loader, result)
 
-    if (args.save_model):
-        torch.save(model.state_dict(),mnist_cnn.pt)
+    torch.save(model.state_dict(), '{}.model'.format(args.optim))
 
 if __name__ == '__main__':
     main()

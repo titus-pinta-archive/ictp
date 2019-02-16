@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 from itertools import count
-import optim.argd1 as optim
+import optim
 import torch
 import torch.nn.functional as F
 import numpy as np
@@ -44,6 +44,7 @@ fc.load_state_dict(torch.load('fc.sv'))
 
 batch_x, batch_y = get_batch()
 op = optim.ARGD1(fc.parameters(), lr=0.1)
+
 
 loss = 0.0
 
