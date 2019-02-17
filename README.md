@@ -84,3 +84,4 @@ status
 File name to save current resault.If None it will use
 the name of the optimiser. (default: None)
 
+  --load-part LOAD_PART name of the saved .part files to load (default: None)'

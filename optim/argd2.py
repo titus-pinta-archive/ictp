@@ -69,7 +69,7 @@ class ARGD2(Optimizer):
                 if p.grad is None:
                     continue
 
-            p.data.add_(p.grad.mult-(group['lr']))
+            p.data.add_(p.grad.mult(-group['lr']))
 
         return closure
 
