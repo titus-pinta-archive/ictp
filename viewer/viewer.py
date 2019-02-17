@@ -1,8 +1,14 @@
 import torch
+import torch.nn.functional as F
+from torchvision import datasets, transforms
+
 import dill
+import matplotlib.pyplot as plt
+import numpy as np
+
+
 import main
 
-from torchvision import datasets, transforms
 
 def help():
     print('\nThe following functions are available:\n')
@@ -21,10 +27,14 @@ def help():
     print('\tthe meaning of the parameters is the same as for the torch dataloader')
     print('\nexample call: viewer.load_mnist()\n')
 
+use_cuda = torch.cuda.is_available()
+
 
 def load_model(path):
+    device = torch.device('cuda' if use_cuda else 'cpu')
     net = main.Net()
     net.load_state_dict(torch.load(path))
+    net.to(device)
     return net
 
 
@@ -57,5 +67,52 @@ def load_mnist(batch_size=64, test_batch_size=1000, use_cuda=True, seed=1):
 
     return train_loader, test_loader
 
+def plot_result(result, plot=None, correct=True, fraction=True, show=True):
+
+    global plt
+    if plot is not None:
+        plt = plot
+
+    if correct:
+        data = np.array(result[1])
+    else:
+        data = result[0] - np.array(result[1])
+
+    ymax = result[0]
+
+    if fraction:
+        data = data / result[0]
+        ymax = 1
+    epochs = np.linspace(0, len(result[1]), len(result[1]))
+
+    plt.ylim(0, ymax)
+
+    plt.plot(epochs, data)
+    if show:
+        plt.show()
+
+    return plt
+
+
+def model_statistics(model, loader):
+
+    device = torch.device('cuda' if use_cuda else 'cpu')
+
+    model.eval()
+    test_loss = 0
+    correct = 0
+    with torch.no_grad():
+        for data, target in loader:
+            data, target = data.to(device), target.to(device)
+            output = model(data)
+            test_loss += F.nll_loss(output, target, reduction='sum').item() # sum up batch loss
+            pred = output.argmax(dim=1, keepdim=True) # get the index of the max log-probability
+            correct += pred.eq(target.view_as(pred)).sum().item()
+
+    test_loss /= len(loader.dataset)
+
+    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
+        test_loss, correct, len(loader.dataset),
+        100. * correct / len(loader.dataset)))
 
 help()
