@@ -1,5 +1,5 @@
 *.model
-.result
+*.result
 __pychache__
 *.pyc
 *.part
