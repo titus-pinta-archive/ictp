@@ -36,6 +36,14 @@ _Save current proggres? (y)es/(n)o/(c)ancel_
 
 Progress is stored in *.part files
 
+## View Result
+
+In the main directory **ictp** start a python shell (execute _python_) and run:
+
+_import viewer_
+
+You will be prompted with all curentlly available options
+
 ## Help
 Please refer to the help option for a more detailed look at the different parameters
 
