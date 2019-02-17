@@ -109,37 +109,74 @@ the name of the optimiser. (default: None)
 
 ## Viewer help output
 
+
+
+
 the following functions and variables are available:
 
+
+
 use_cuda:
-	boolean variable default is True if cuda is available
-	can be modified directly
+
+&nbsp;&nbsp;&nbsp;&nbsp;boolean variable default is True if cuda is available
+
+&nbsp;&nbsp;&nbsp;&nbsp;can be modified directly
+
+
 
 example modification viewer.use_cuda=False
+
 load_model(path)
-	returns the model stored in the specified path
-	please provide the extension (normally .model or .model.part)
+
+&nbsp;&nbsp;&nbsp;&nbsp;returns the model stored in the specified path
+
+&nbsp;&nbsp;&nbsp;&nbsp;please provide the extension (normally .model or .model.part)
+
+
 
 example call: viewer.load_model('SGD.model')
 
+
+
 load result(path)
-	returns the result vector stored in the specified path
-	please also provide the extension
-	the result is a tupel with the first component the number of testing images
-		and the second component a tuple with the params (lr),
-		thrd component a vector with the number of correct predictions
-		and the forth a vector with the loss for each epoch
+
+&nbsp;&nbsp;&nbsp;&nbsp;returns the result vector stored in the specified path
+
+&nbsp;&nbsp;&nbsp;&nbsp;please also provide the extension
+
+&nbsp;&nbsp;&nbsp;&nbsp;the result is a tupel with the first component the number of testing images
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and the second component a tuple with the params (lr),
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thrd component a vector with the number of correct predictions
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and the forth a vector with the loss for each epoch
+
+
 
 example call: viewer.load_result('SGD.result')
 
+
+
 load_mnist(batch_size=64, test_batch_size=1000, use_cuda=True, seed=1)
-	the meaning of the parameters is the same as for the torch dataloader
+
+&nbsp;&nbsp;&nbsp;&nbsp;the meaning of the parameters is the same as for the torch dataloader
+
+
 
 example call: viewer.load_mnist()
 
+
+
 plot_result(result, plot=None, loss=False, correct=True, fraction=True, show=True)
-	plots the result info and returns the matplotlib object
-		plot=a previously constructed plot with which to combine the current plot
-		loss=True if the plot should contain the loss, False for the number of correct predictions
-		correct=True for num of correct prediction false for number of wrong predictions
-		fraction=True divides num correct by num total
+
+&nbsp;&nbsp;&nbsp;&nbsp;plots the result info and returns the matplotlib object
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plot=a previously constructed plot with which to combine the current plot
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loss=True if the plot should contain the loss, False for the number of correct predictions
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;correct=True for num of correct prediction false for number of wrong predictions
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fraction=True divides num correct by num total
+
