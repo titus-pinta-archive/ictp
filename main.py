@@ -83,7 +83,7 @@ def train_non_stoch(args, model, device, train_loader, optimizer, epoch):
 
     optimizer.step(closure)
 
-def test(args, model, device, test_loader, result):
+def test(args, model, device, test_loader, result_correct, result_loss):
     model.eval()
     test_loss = 0
     correct = 0
@@ -101,7 +101,8 @@ def test(args, model, device, test_loader, result):
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
 
-    result.append(correct)
+    result_correct.append(correct)
+    result_loss.append(test_loss)
 
 def main():
     # Training settings
@@ -172,12 +173,16 @@ def main():
         model.load_state_dict(torch.load('{}.model.part'.format(args.load_part)))
         with open('{}.result.part'.format(args.load_part), 'rb') as f:
             result = dill.load(f)
+            result_correct = result[2]
+            result_loss = result[3]
 
-        print('Previous results {} out of {}'.format(result[1], result[0]))
+        print('Previous correct  {}'.format(result_correct))
+        print('Previous loss {}'.format(result_loss))
 
     else:
         model.load_state_dict(torch.load('init.model'))
-        result = []
+        result_correct = []
+        result_loss = []
 
 
 
@@ -199,12 +204,13 @@ def main():
     for epoch in range(1, args.epochs + 1):
         try:
             train(args, model, device, train_loader, optimizer, epoch)
-            test(args, model, device, test_loader, result)
+            test(args, model, device, test_loader, result_correct, result_loss)
         except KeyboardInterrupt:
             exit_choise = input('Save current proggres? (y)es/(n)o/(c)ancel')
             if exit_choise == 'y' or exit_choise == 'Y' or exit_choise == 'yes' or exit_choise == 'Yes':
                 with open('{}{}.result.part'.format(args.optim, '.stoch' if args.stoch else ''), 'wb') as f:
-                    dill.dump((len(test_loader.dataset), result), f)
+                    dill.dump((len(test_loader.dataset),((args.lr, args.momentum) if args.optim ==
+                                                         'SGD' else args.lr), result_correct, result_loss), f)
 
                 torch.save(model.state_dict(), '{}{}.model.part'.format(args.optim, '.stoch' if args.stoch else ''))
                 exit(0)
@@ -214,7 +220,8 @@ def main():
 
 
     with open('{}{}.result'.format(args.optim, '.stoch' if args.stoch else ''), 'wb') as f:
-        dill.dump((len(test_loader.dataset), result), f)
+        dill.dump((len(test_loader.dataset),((args.lr, args.momentum) if args.optim == 'SGD' else
+                                             args.lr), result_correct,result_loss), f)
 
     torch.save(model.state_dict(), '{}{}.model'.format(args.optim, '.stoch' if args.stoch else ''))
 

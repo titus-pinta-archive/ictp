@@ -42,7 +42,7 @@ In the main directory **ictp** start a python shell (execute _python_) and run:
 
 _import viewer_
 
-You will be prompted with all curentlly available options
+You will be prompted with all curently available options
 
 ## Help
 Please refer to the help option for a more detailed look at the different parameters

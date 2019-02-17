@@ -11,7 +11,11 @@ import main
 
 
 def help():
-    print('\nThe following functions are available:\n')
+    print('use_cuda:')
+    print('\tboolean variable default is True if cuda is available')
+    print('\tcan be modefied directlly')
+    print('\nexample modification viewer.use_cuda=False')
+    print('\nthe following functions are available:\n')
     print('load_model(path)')
     print('\treturns the model stored in the specified path')
     print('\tplease provide the extension (normally .model or .model.part)')
@@ -20,8 +24,8 @@ def help():
     print('\trerturns the result vector stored in the specified path')
     print('\tplease also provide the extension')
     print('\tthe result is a tupe with the first component the number of testing images')
-    print('\t\tand the second component a vector with the number of correct prediction')
-    print('\t\tfor each  epoch')
+    print('\t\tand the second component a vector with tuples composed of the number')
+    print('\t\tof correct predictions and the loss for each epoch')
     print('\nexample call: viewer.load_result(\'SGD.result\')\n')
     print('load_mnist(batch_size=64, test_batch_size=1000, use_cuda=True, seed=1)')
     print('\tthe meaning of the parameters is the same as for the torch dataloader')
@@ -62,12 +66,12 @@ def load_mnist(batch_size=64, test_batch_size=1000, use_cuda=True, seed=1):
         datasets.MNIST('./data', train=False, transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
-                       ])),
+        ])),
         batch_size=test_batch_size, shuffle=True, **kwargs)
 
     return train_loader, test_loader
 
-def plot_result(result, plot=None, correct=True, fraction=True, show=True):
+def plot_result(result, plot=None, loss=False, correct=True, fraction=True, show=True):
 
     global plt
     if plot is not None:
