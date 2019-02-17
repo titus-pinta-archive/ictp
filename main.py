@@ -62,7 +62,7 @@ def train_stoch(args, model, device, train_loader, optimizer, epoch):
 def train_non_stoch(args, model, device, train_loader, optimizer, epoch):
     closure_calls = 0
     def closure():
-        cliosure_calls += 1
+        closure_calls += 1
         print('\n Gradient computed: {} times\n)'.format(closure_calls))
         optimizer.zero_grad()
 
