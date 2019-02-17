@@ -64,7 +64,7 @@ def train_non_stoch(args, model, device, train_loader, optimizer, epoch):
     def closure():
         nonlocal closure_calls
         closure_calls += 1
-        print('\n Number of closure calls: {}\n'.format(closure_calls))
+        print('\nNumber of closure calls: {}\n'.format(closure_calls))
         optimizer.zero_grad()
 
 
@@ -129,7 +129,7 @@ def main():
                         help='use stochastic gradient computation')
     parser.add_argument('--save-name', default=None, help='File name to save current resault.' +
                         'If None it will use the name of the optimiser. (default: None)')
-    parser.add_argument('--load-part', default=None, help='Name of the saved .part files to load' +
+    parser.add_argument('--load-part', default=None, help='name of the saved .part files to load' +
                         '(default: None)')
     args = parser.parse_args()
 
