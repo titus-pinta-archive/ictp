@@ -2,3 +2,4 @@
 .result
 __pychache__
 *.pyc
+*.part

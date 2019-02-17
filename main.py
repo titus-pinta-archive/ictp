@@ -131,12 +131,15 @@ def main():
 
     print('Will train for {} epochs with a batch size of {}'.format(args.epochs, args.batch_size))
 
+
     if(args.stoch):
         train = train_stoch
     else:
         train = train_non_stoch
 
-    use_cuda = False #not args.no_cuda and torch.cuda.is_available()
+    use_cuda = not args.no_cuda and torch.cuda.is_available()
+
+    print('Computing on {}'.format('cuda' if use_cuda else 'cpu'))
 
     torch.manual_seed(args.seed)
 
@@ -177,8 +180,21 @@ def main():
 
 
     for epoch in range(1, args.epochs + 1):
-        train(args, model, device, train_loader, optimizer, epoch)
-        test(args, model, device, test_loader, result)
+        try:
+            train(args, model, device, train_loader, optimizer, epoch)
+            test(args, model, device, test_loader, result)
+        except KeyboardInterrupt:
+            exit_choise = input('Save current proggres? (y)es/(n)o/(c)ancel?')
+            if exit_choise == 'y' or exit_choise == 'Y' or exit_choise == 'yes' or exit_choise == 'Yes':
+                with open('{}{}.result.part'.format(args.optim, '.stoch' if args.stoch else ''), 'wb') as f:
+                    dill.dump((len(test_loader.dataset), result), f)
+
+                torch.save(model.state_dict(), '{}{}.model.part'.format(args.optim, '.stoch' if args.stoch else ''))
+                exit(0)
+
+            elif exit_choise == 'n' or exit_choise == 'N' or exit_choise == 'no' or exit_choise == 'No':
+                exit(0)
+
 
     with open('{}{}.result'.format(args.optim, '.stoch' if args.stoch else ''), 'wb') as f:
         dill.dump((len(test_loader.dataset), result), f)
