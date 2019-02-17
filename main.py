@@ -60,6 +60,7 @@ def train_stoch(args, model, device, train_loader, optimizer, epoch):
 
 
 def train_non_stoch(args, model, device, train_loader, optimizer, epoch):
+    nonlocal closure_calls
     closure_calls = 0
     def closure():
         closure_calls += 1
