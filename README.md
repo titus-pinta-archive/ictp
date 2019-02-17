@@ -26,7 +26,7 @@ _python main.py --optim ARGD1 --lr 0.000001_ to combine all
 
 ## Stop
 
-Pressing **<CTRL> + c** will prompt to the following save message
+Pressing **CTRL + c** will prompt to the following save message
 
 _Save current proggres? (y)es/(n)o/(c)ancel_
 
