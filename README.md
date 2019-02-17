@@ -18,11 +18,15 @@ _conda install torch torchvision_
 
 _python main.py -h_ for help
 
-_python main.py --optim 'ARGD1'_ for different optimiser
+_python main.py --optim 'ARGD1'_    for different optimiser
 
-_python main.py --lr '0.01'_ for different learning rates
+_python main.py --lr '0.01'_    for different learning rates
 
-_python main.py --optim ARGD1 --lr 0.000001_ to combine all
+_python main.py --optim ARGD1 --lr 0.000001_    to combine all
+
+All options are presented in the help menu
+
+All options can be combined in order to produce the exact desired behaviour
 
 ## Stop
 
