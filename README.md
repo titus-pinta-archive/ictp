@@ -105,3 +105,41 @@ File name to save current resault.If None it will use
 the name of the optimiser. (default: None)
 
   --load-part LOAD_PART name of the saved .part files to load (default: None)'
+
+
+## Viewer help output
+
+the following functions and variables are available:
+
+use_cuda:
+	boolean variable default is True if cuda is available
+	can be modified directly
+
+example modification viewer.use_cuda=False
+load_model(path)
+	returns the model stored in the specified path
+	please provide the extension (normally .model or .model.part)
+
+example call: viewer.load_model('SGD.model')
+
+load result(path)
+	returns the result vector stored in the specified path
+	please also provide the extension
+	the result is a tupel with the first component the number of testing images
+		and the second component a tuple with the params (lr),
+		thrd component a vector with the number of correct predictions
+		and the forth a vector with the loss for each epoch
+
+example call: viewer.load_result('SGD.result')
+
+load_mnist(batch_size=64, test_batch_size=1000, use_cuda=True, seed=1)
+	the meaning of the parameters is the same as for the torch dataloader
+
+example call: viewer.load_mnist()
+
+plot_result(result, plot=None, loss=False, correct=True, fraction=True, show=True)
+	plots the result info and returns the matplotlib object
+		plot=a previously constructed plot with which to combine the current plot
+		loss=True if the plot should contain the loss, False for the number of correct predictions
+		correct=True for num of correct prediction false for number of wrong predictions
+		fraction=True divides num correct by num total
