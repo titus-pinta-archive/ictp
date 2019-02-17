@@ -48,8 +48,8 @@ class ARGD1B(Optimizer):
 
                 d_p = p.grad.data
                 state['nabla(z_{n})'] = d_p
-                p.data.add_(p.data.sub(state['x_{n-1}']).mul(self.state['nabla(x_{n})'] /
-                                                             (self.state['nabla(x_{n-1})'])))
+                p.data.add_(p.data.sub(state['x_{n-1}']).mul(self.state['nabla(x_{n})'].div(
+                                                             (self.state['nabla(x_{n-1})']))))
 
         closure()
 
