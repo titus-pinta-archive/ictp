@@ -70,7 +70,7 @@ class ARGD2B(Optimizer):
                 if p.grad is None:
                     continue
 
-            p.data.add_(p.grad.muli-(group['lr']))
+            p.data.add_(p.grad.mul(-group['lr']))
 
 
         return closure
