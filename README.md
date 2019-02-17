@@ -24,6 +24,14 @@ _python main.py --lr '0.01'_ for different learning rates
 
 _python main.py --optim ARGD1 --lr 0.000001_ to combine all
 
+## Stop
+
+Pressing **<CTRL> + c** will prompt to the following save message
+
+_Save current proggres? (y)es/(n)o/(c)ancel_
+
+Progress is stored in *.part files
+
 ## Help
 Please refer to the help option for a more detailed look at the different parameters
 

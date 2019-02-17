@@ -201,7 +201,7 @@ def main():
             train(args, model, device, train_loader, optimizer, epoch)
             test(args, model, device, test_loader, result)
         except KeyboardInterrupt:
-            exit_choise = input('Save current proggres? (y)es/(n)o/(c)ancel?')
+            exit_choise = input('Save current proggres? (y)es/(n)o/(c)ancel')
             if exit_choise == 'y' or exit_choise == 'Y' or exit_choise == 'yes' or exit_choise == 'Yes':
                 with open('{}{}.result.part'.format(args.optim, '.stoch' if args.stoch else ''), 'wb') as f:
                     dill.dump((len(test_loader.dataset), result), f)
