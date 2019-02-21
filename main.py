@@ -1,4 +1,4 @@
-#! /bin/python
+#! /usr/python-pytorch/bin/python
 
 from __future__ import print_function
 import argparse
@@ -9,6 +9,16 @@ import optim
 from torchvision import datasets, transforms
 
 import dill
+
+import signal
+import sys
+
+
+
+
+
+
+
 
 class Net(nn.Module):
     def __init__(self):
@@ -105,6 +115,38 @@ def test(args, model, device, test_loader, result_correct, result_loss):
     result_loss.append(test_loss)
 
 def main():
+    #handle signals
+    def exit_with_choice():
+        print('Save current progress? (y)es/(n)o/(c)ancel', end='')
+        exit_choice='y'
+        try:
+            exit_choice = input()
+        except EOFError:
+            print('\nStdin error: Defaults to y')
+            exit_choice = 'y'
+
+
+        if exit_choice == 'y' or exit_choice == 'Y' or exit_choice == 'yes' or exit_choice == 'Yes':
+            with open('{}{}.result.part'.format(args.optim, '.stoch' if args.stoch else ''), 'wb') as f:
+                dill.dump((len(test_loader.dataset),((args.lr, args.momentum) if args.optim ==
+                                                     'SGD' else args.lr), result_correct, result_loss), f)
+
+            torch.save(model.state_dict(), '{}{}.model.part'.format(args.optim, '.stoch' if args.stoch else ''))
+            exit(0)
+
+        elif exit_choice == 'n' or exit_choice == 'N' or exit_choice == 'no' or exit_choice == 'No':
+            exit(0)
+
+
+    def sigint_handler(sig, frame):
+        exit_with_choice()
+
+
+
+    signal.signal(signal.SIGINT, sigint_handler)
+
+
+
     # Training settings
 
 
@@ -132,6 +174,7 @@ def main():
                         'If None it will use the name of the optimiser. (default: None)')
     parser.add_argument('--load-part', default=None, help='name of the saved .part files to load' +
                         '(default: None)')
+    parser.add_argument('--fash', action='store_true', default=False, help='Use MNIST fashion not MNIST')
     args = parser.parse_args()
 
     print('Gradient is computed {}'.format('stochastically' if args.stoch else 'non stochastically'))
@@ -153,15 +196,16 @@ def main():
     device = torch.device('cuda' if use_cuda else 'cpu')
 
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
+    data_path = './data' if not args.fash else './data_fashion'
     train_loader = torch.utils.data.DataLoader(
-        datasets.MNIST('./data', train=True, download=True,
+        datasets.MNIST(data_path, train=True, download=True,
                        transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
                        ])),
         batch_size=args.batch_size, shuffle=True, **kwargs)
     test_loader = torch.utils.data.DataLoader(
-        datasets.MNIST('./data', train=False, transform=transforms.Compose([
+        datasets.MNIST(data_path, train=False, transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
                        ])),
@@ -206,18 +250,7 @@ def main():
             train(args, model, device, train_loader, optimizer, epoch)
             test(args, model, device, test_loader, result_correct, result_loss)
         except KeyboardInterrupt:
-            exit_choise = input('Save current proggres? (y)es/(n)o/(c)ancel')
-            if exit_choise == 'y' or exit_choise == 'Y' or exit_choise == 'yes' or exit_choise == 'Yes':
-                with open('{}{}.result.part'.format(args.optim, '.stoch' if args.stoch else ''), 'wb') as f:
-                    dill.dump((len(test_loader.dataset),((args.lr, args.momentum) if args.optim ==
-                                                         'SGD' else args.lr), result_correct, result_loss), f)
-
-                torch.save(model.state_dict(), '{}{}.model.part'.format(args.optim, '.stoch' if args.stoch else ''))
-                exit(0)
-
-            elif exit_choise == 'n' or exit_choise == 'N' or exit_choise == 'no' or exit_choise == 'No':
-                exit(0)
-
+            exit_with_choice()
 
     with open('{}{}.result'.format(args.optim, '.stoch' if args.stoch else ''), 'wb') as f:
         dill.dump((len(test_loader.dataset),((args.lr, args.momentum) if args.optim == 'SGD' else
