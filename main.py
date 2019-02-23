@@ -15,11 +15,6 @@ import sys
 
 
 
-
-
-
-
-
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -127,11 +122,11 @@ def main():
 
 
         if exit_choice == 'y' or exit_choice == 'Y' or exit_choice == 'yes' or exit_choice == 'Yes':
-            with open('{}{}.result.part'.format(args.optim, '.stoch' if args.stoch else ''), 'wb') as f:
+            with open('./results/{}{}.result.part'.format(args.optim, '.stoch' if args.stoch else ''), 'wb') as f:
                 dill.dump((len(test_loader.dataset),((args.lr, args.momentum) if args.optim ==
                                                      'SGD' else args.lr), result_correct, result_loss), f)
 
-            torch.save(model.state_dict(), '{}{}.model.part'.format(args.optim, '.stoch' if args.stoch else ''))
+            torch.save(model.state_dict(), './results/{}{}.model.part'.format(args.optim, '.stoch' if args.stoch else ''))
             exit(0)
 
         elif exit_choice == 'n' or exit_choice == 'N' or exit_choice == 'no' or exit_choice == 'No':
@@ -196,7 +191,7 @@ def main():
     device = torch.device('cuda' if use_cuda else 'cpu')
 
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
-    data_path = './data' if not args.fash else './data_fashion'
+    data_path = './data' if not args.fash else './data-fashion'
     train_loader = torch.utils.data.DataLoader(
         datasets.MNIST(data_path, train=True, download=True,
                        transform=transforms.Compose([
@@ -214,8 +209,8 @@ def main():
 
     model = Net()
     if args.load_part is not None:
-        model.load_state_dict(torch.load('{}.model.part'.format(args.load_part)))
-        with open('{}.result.part'.format(args.load_part), 'rb') as f:
+        model.load_state_dict(torch.load('./results/{}.model.part'.format(args.load_part)))
+        with open('./results/{}.result.part'.format(args.load_part), 'rb') as f:
             result = dill.load(f)
             result_correct = result[2]
             result_loss = result[3]
@@ -252,11 +247,11 @@ def main():
         except KeyboardInterrupt:
             exit_with_choice()
 
-    with open('{}{}.result'.format(args.optim, '.stoch' if args.stoch else ''), 'wb') as f:
+    with open('./results/{}{}.result'.format(args.optim, '.stoch' if args.stoch else ''), 'wb') as f:
         dill.dump((len(test_loader.dataset),((args.lr, args.momentum) if args.optim == 'SGD' else
                                              args.lr), result_correct,result_loss), f)
 
-    torch.save(model.state_dict(), '{}{}.model'.format(args.optim, '.stoch' if args.stoch else ''))
+    torch.save(model.state_dict(), './results/{}{}.model'.format(args.optim, '.stoch' if args.stoch else ''))
 
 if __name__ == '__main__':
     main()
