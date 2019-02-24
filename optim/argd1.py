@@ -21,7 +21,7 @@ class ARGD1(Optimizer):
 
 
     def __setstate__(self, state):
-        super(SGD, self).__setstate__(state)
+        super(ARGD1, self).__setstate__(state)
 
     def step(self, closure):
         self.state['n_iter'] += 1
@@ -32,8 +32,8 @@ class ARGD1(Optimizer):
                 if p.grad is None:
                     continue
                 state = self.state[p]
-
                 d_p = p.grad.data
+                state['x_{n-1}'] = p.data
                 p.data.sub_(d_p.mul(group['lr'] + group['lr'] ** 2))
 
         closure()

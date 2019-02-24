@@ -16,13 +16,14 @@ class ARGD1B(Optimizer):
 
         for group in self.param_groups:
             for p in group['params']:
-                self.state[p]['x_{n-1}'] = p.data
+                self.state['x_{n-1}'] = p.data
                 self.state[p]['nabla(z_{n})'] = None
-                self.state[p]['nable(x_{n})'] = None
-                self.state[p]['nable(x_{n-1})'] = torch.ones_like(p.data).mul_(float('inf'))
+                self.state[p]['nabla(x_{n})'] = None
+                self.state[p]['nabla(x_{n-1})'] = torch.ones_like(p.data).mul(float('inf'))
+
 
     def __setstate__(self, state):
-        super(SGD, self).__setstate__(state)
+        super(ARGD1b, self).__setstate__(state)
 
     def step(self, closure):
         self.state['n_iter'] += 1
@@ -33,11 +34,11 @@ class ARGD1B(Optimizer):
                 if p.grad is None:
                     continue
                 state = self.state[p]
-
                 d_p = p.grad.data
-                state['nabla(x_{n})'] = p.data
+                state['x_{n-1}'] = p.data
+                state['nabla(x_{n})'] = p.grad.data
                 p.data.sub_(d_p.mul(group['lr'] + group['lr'] ** 2))
-
+                print(p.data)
         closure()
 
         for group in self.param_groups:
@@ -46,7 +47,6 @@ class ARGD1B(Optimizer):
                 if p.grad is None:
                     continue
                 state = self.state[p]
-
                 d_p = p.grad.data
                 state['nabla(z_{n})'] = d_p
                 p.data.add_(p.data.sub(state['x_{n-1}']).mul(state['nabla(x_{n})'].div(
