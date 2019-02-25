@@ -38,7 +38,6 @@ class ARGD1B(Optimizer):
                 state['x_{n-1}'] = p.data
                 state['nabla(x_{n})'] = p.grad.data
                 p.data.sub_(d_p.mul(group['lr'] + group['lr'] ** 2))
-                print(p.data)
         closure()
 
         for group in self.param_groups:
@@ -50,9 +49,9 @@ class ARGD1B(Optimizer):
                 d_p = p.grad.data
                 state['nabla(z_{n})'] = d_p
                 p.data.add_(p.data.sub(state['x_{n-1}']).mul(state['nabla(x_{n})'].div(
-                                                             (state['nabla(x_{n-1})']))))
-
+                                                             (state['nabla(x_{n-1})'].add(1e-5)))))
                 state['nabla(x_{n-1})'] = state['nabla(x_{n})']
+
         closure()
 
         for group in self.param_groups:

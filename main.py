@@ -112,7 +112,7 @@ def test(args, model, device, test_loader, result_correct, result_loss):
 def main():
     #handle signals
     def exit_with_choice():
-        print('Save current progress? (y)es/(n)o/(c)ancel', end='')
+        print('Save current progress? (y)es/(n)o/(c)ancel ', end='')
         exit_choice='y'
         try:
             exit_choice = input()

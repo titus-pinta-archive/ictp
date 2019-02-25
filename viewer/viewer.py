@@ -5,7 +5,7 @@ from torchvision import datasets, transforms
 import dill
 import matplotlib.pyplot as plt
 import numpy as np
-
+import pandas as pd
 
 import main
 
@@ -113,7 +113,7 @@ def plot_result(result, plot=None, loss=False, correct=True, fraction=True, show
 def model_statistics(model, loader):
 
     device = torch.device('cuda' if use_cuda else 'cpu')
-
+    df = np.zeros((10))
     model.eval()
     test_loss = 0
     correct = 0
@@ -123,6 +123,8 @@ def model_statistics(model, loader):
             output = model(data)
             test_loss += F.nll_loss(output, target, reduction='sum').item() # sum up batch loss
             pred = output.argmax(dim=1, keepdim=True) # get the index of the max log-probability
+            for i in pred[pred.eq(target.view_as(pred))]:
+                df[int(i)] += 1
             correct += pred.eq(target.view_as(pred)).sum().item()
 
     test_loss /= len(loader.dataset)
@@ -130,5 +132,7 @@ def model_statistics(model, loader):
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
         test_loss, correct, len(loader.dataset),
         100. * correct / len(loader.dataset)))
+
+    return df
 
 help()

@@ -50,7 +50,7 @@ class ARGD2B(Optimizer):
                 d_p = p.grad.data
                 state['nabla(z_{n})'] = d_p
                 p.data.add_(p.data.sub(state['x_{n}']).mul(state['nabla(x_{n})'].div(
-                                                             (state['nabla(x_{n-1})']))))
+                                                             (state['nabla(x_{n-1})'].add(1e-5)))))
                 state['nabla(x_{n-1})'] = state['nabla(x_{n})']
 
         closure()
