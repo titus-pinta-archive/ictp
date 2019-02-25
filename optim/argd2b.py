@@ -36,6 +36,7 @@ class ARGD2B(Optimizer):
 
                 d_p = p.grad.data
                 state['x_{n}'] = p.data
+                state['nabla(x_{n})'] = p.grad.data
                 p.data.sub_(d_p.mul(group['lr'] + group['lr'] ** 2))
 
         closure()
