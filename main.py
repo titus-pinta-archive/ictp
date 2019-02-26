@@ -234,6 +234,7 @@ def main():
 
         optim_class = getattr(optim, args.optim)
         optimizer = optim_class(model.parameters(), lr=args.lr, **extra_params)
+        print(optimizer)
     except Exception as e:
         print(e)
         raise ValueError('Undefined Optimiser: {}'.format(args.optim))

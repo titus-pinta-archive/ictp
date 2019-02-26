@@ -5,7 +5,6 @@ from .optimizer import Optimizer, required
 class ARGD1(Optimizer):
 
     def __init__(self, params, lr=required):
-        print('Passed lr is {}'.format(lr))
         if lr is not required and lr < 0.0:
             raise ValueError("Invalid learning rate: {}".format(lr))
 
