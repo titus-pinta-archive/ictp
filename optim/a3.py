@@ -4,11 +4,11 @@ from .optimizer import Optimizer, required
 
 class A3(Optimizer):
 
-    def __init__(self, params, lr=required):
+    def __init__(self, params, lr=required, k=5):
         if lr is not required and lr < 0.0:
             raise ValueError("Invalid learning rate: {}".format(lr))
 
-        defaults = dict(lr=lr, k=5)
+        defaults = dict(lr=lr, k=k)
         super(A3, self).__init__(params, defaults)
 
         self.state['n_iter'] = 0

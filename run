@@ -1,0 +1,8 @@
+#! /bin/bash
+# Run all algorithms
+
+python main.py --lr $1 --epochs $2 --optim SGD --momentum $3
+python main.py --lr $1 --epochs $2 --optim A3 --k $4
+
+
+
