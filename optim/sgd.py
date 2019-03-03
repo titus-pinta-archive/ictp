@@ -75,9 +75,6 @@ class SGD(Optimizer):
             closure (callable, optional): A closure that reevaluates the model
                 and returns the loss.
         """
-        loss = None
-        if closure is not None:
-            loss = closure()
 
         for group in self.param_groups:
             weight_decay = group['weight_decay']
@@ -106,4 +103,4 @@ class SGD(Optimizer):
 
                 p.data.add_(-group['lr'], d_p)
 
-        return loss
+        return None

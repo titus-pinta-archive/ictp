@@ -63,4 +63,4 @@ class ARGD1B(Optimizer):
                 d_p = p.grad.data
                 p.data.add_(d_p.mul(-group['lr']).add(state['nabla(z_{n})'].mul(-group['lr'] ** 2)))
 
-        return closure
+        return None

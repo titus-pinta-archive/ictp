@@ -38,4 +38,4 @@ class A3(Optimizer):
                 state['u'] = p.data.add(p.data.sub(state['u']).mul(beta * (1 - lr * beta))).sub(d_p.mul(lr * lr))
                 p.data = state['u'] + state['v'].mul(lr * beta)
 
-        return closure
+        return None

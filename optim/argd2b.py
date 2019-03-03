@@ -75,4 +75,4 @@ class ARGD2B(Optimizer):
             p.data.add_(p.grad.mul(-group['lr']))
 
 
-        return closure
+        return None
