@@ -226,6 +226,8 @@ def main():
         result_loss = []
 
 
+    print("Initial model: {}".format(str(model)))
+
 
     model.to(device)
     try:
