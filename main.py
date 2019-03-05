@@ -246,6 +246,8 @@ def main():
         print(e)
         raise ValueError('Undefined Optimiser: {}'.format(args.optim))
 
+    print('Model start point:')
+    test(args, model, device, test_loader, result_correct, result_loss)
 
 
     for epoch in range(1, args.epochs + 1):

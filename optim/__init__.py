@@ -21,6 +21,7 @@ from .argd2 import ARGD2
 from .argd1b import ARGD1B
 from .argd2b import ARGD2B
 from .a3 import A3
+from .a5 import A5
 from . import lr_scheduler
 
 del adadelta
@@ -39,3 +40,4 @@ del argd2
 del argd1b
 del argd2b
 del a3
+del a5
