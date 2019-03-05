@@ -7,7 +7,7 @@ class A5(Optimizer):
     def __init__(self, params, lr=required, k=5, q=5):
         if lr is not required and lr < 0.0:
             raise ValueError("Invalid learning rate: {}".format(lr))
-
+        print(k)
         defaults = dict(lr=lr, k=k, q=q)
         super(A5, self).__init__(params, defaults)
 

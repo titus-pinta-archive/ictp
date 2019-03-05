@@ -156,8 +156,10 @@ def main():
                         help='learning rate (default: 0.00001)')
     parser.add_argument('--momentum', type=float, default=0.0, metavar='M',
                         help='SGD momentum (default: 0.0)')
+    parser.add_argument('--q', type=float, default=2, metavar='Q',
+                        help='q parameter for A5 algorithm (default: 2)')
     parser.add_argument('--k', type=float, default=5, metavar="K",
-                        help='k parameter for A3 algorithm (default: 5)')
+                        help='k parameter for A3/A5 algorithm (default: 5)')
     parser.add_argument('--optim', default='SGD', help='Optimiser to use (default: SGD)')
     parser.add_argument('--no-cuda', action='store_true', default=False,
                         help='disables CUDA training')
@@ -237,7 +239,8 @@ def main():
             extra_params = {'momentum': args.momentum, 'nesterov': True}
         if args.optim == 'A3':
             extra_params = {'k': args.k}
-
+        if args.optim == 'A5':
+            extra_params = {'k': args.k, 'q': args.q}
 
         optim_class = getattr(optim, args.optim)
         optimizer = optim_class(model.parameters(), lr=args.lr, **extra_params)
