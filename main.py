@@ -10,7 +10,6 @@ from torchvision import datasets, transforms
 
 import dill
 
-import signal
 import sys
 
 
@@ -54,7 +53,6 @@ def train_stoch(args, model, device, train_loader, optimizer, epoch):
             loss = F.nll_loss(output, target)
             loss.backward()
 
-        closure()
         optimizer.step(closure)
 
         if batch_idx % args.log_interval == 0:
@@ -110,16 +108,10 @@ def test(args, model, device, test_loader, result_correct, result_loss):
     result_loss.append(test_loss)
 
 def main():
-    #handle signals
+    #handle exit
     def exit_with_choice():
         print('Save current progress? (y)es/(n)o/(c)ancel ', end='')
-        exit_choice='y'
-        try:
-            exit_choice = input()
-        except EOFError:
-            print('\nStdin error: Defaults to y')
-            exit_choice = 'y'
-
+        exit_choice = input()
 
         if exit_choice == 'y' or exit_choice == 'Y' or exit_choice == 'yes' or exit_choice == 'Yes':
             with open('./results/{}{}.result.part'.format(args.optim, '.stoch' if args.stoch else ''), 'wb') as f:
@@ -131,14 +123,6 @@ def main():
 
         elif exit_choice == 'n' or exit_choice == 'N' or exit_choice == 'no' or exit_choice == 'No':
             exit(0)
-
-
-    def sigint_handler(sig, frame):
-        exit_with_choice()
-
-
-
-    signal.signal(signal.SIGINT, sigint_handler)
 
 
 

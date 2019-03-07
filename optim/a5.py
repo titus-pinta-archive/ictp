@@ -23,6 +23,9 @@ class A5(Optimizer):
         super(A5, self).__setstate__(state)
 
     def step(self, closure):
+        if closure is not None:
+            loss = closure()
+
         self.state['n_iter'] += 1
 
         for group in self.param_groups:
@@ -39,4 +42,4 @@ class A5(Optimizer):
                 state['u'] = state['u'].add(p.data.sub(state['u']).mul((1 - beta)/beta))
                 p.data = state['u'] + state['v'].mul(lr * beta)
 
-        return None
+        return loss
