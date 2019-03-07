@@ -158,7 +158,17 @@ def main():
     parser.add_argument('--load-part', default=None, help='name of the saved .part files to load' +
                         '(default: None)')
     parser.add_argument('--fash', action='store_true', default=False, help='Use MNIST fashion not MNIST')
+    parser.add_argument('--optimhelp', default=False, action='store_true', help='Print optim options')
+
     args = parser.parse_args()
+
+    if args.optimhelp:
+        optims = dir(optim)
+        for option in optims:
+            if '_' not in option:
+                print(option)
+        exit()
+
 
     print('Gradient is computed {}'.format('stochastically' if args.stoch else 'non stochastically'))
 
