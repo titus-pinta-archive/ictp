@@ -189,39 +189,28 @@ def main():
     device = torch.device('cuda' if use_cuda else 'cpu')
 
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
+
     if args.fash:
         data_path = './datafash'
-
-        train_loader = torch.utils.data.DataLoader(
-            datasets.FashionMNIST(data_path, train=True, download=True,
-                           transform=transforms.Compose([
-                               transforms.ToTensor(),
-                               transforms.Normalize((0.1307,), (0.3081,))
-                           ])),
-            batch_size=args.batch_size, shuffle=True, **kwargs )
-        test_loader = torch.utils.data.DataLoader(
-            datasets.FashionMNIST(data_path, train=False, transform=transforms.Compose([
-                               transforms.ToTensor(),
-                               transforms.Normalize((0.1307,), (0.3081,))
-                           ])),
-            batch_size=args.test_batch_size, shuffle=True, **kwargs)
+        dataset = datasets.FashionMNIST
 
     else:
         data_path = './data'
+        dataset = datasets.MNIST
 
-        train_loader = torch.utils.data.DataLoader(
-            datasets.MNIST(data_path, train=True, download=True,
-                           transform=transforms.Compose([
-                               transforms.ToTensor(),
-                               transforms.Normalize((0.1307,), (0.3081,))
-                           ])),
-            batch_size=args.batch_size, shuffle=True, **kwargs )
-        test_loader = torch.utils.data.DataLoader(
-            datasets.MNIST(data_path, train=False, transform=transforms.Compose([
-                               transforms.ToTensor(),
-                               transforms.Normalize((0.1307,), (0.3081,))
-                           ])),
-            batch_size=args.test_batch_size, shuffle=True, **kwargs)
+    train_loader = torch.utils.data.DataLoader(
+        dataset(data_path, train=True, download=True,
+                       transform=transforms.Compose([
+                           transforms.ToTensor(),
+                           transforms.Normalize((0.1307,), (0.3081,))
+                       ])),
+        batch_size=args.batch_size, shuffle=True, **kwargs )
+    test_loader = torch.utils.data.DataLoader(
+        dataset(data_path, train=False, transform=transforms.Compose([
+                           transforms.ToTensor(),
+                           transforms.Normalize((0.1307,), (0.3081,))
+                       ])),
+        batch_size=args.test_batch_size, shuffle=True, **kwargs)
 
     model = Net()
     if args.load_part is not None:
@@ -242,6 +231,7 @@ def main():
 
     print("Initial model: {}".format(str(model)))
 
+    print("Using {}MNIST dataset".format('fashion ' if args.fash else ''))
 
     model.to(device)
     try:
@@ -277,6 +267,7 @@ def main():
                                              args.lr), result_correct,result_loss), f)
 
     torch.save(model.state_dict(), './results/{}{}.model'.format(args.optim, '.stoch' if args.stoch else ''))
+
 
 if __name__ == '__main__':
     main()
